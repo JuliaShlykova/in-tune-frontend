@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import useWindowDimensions from '../hooks/useWindowDimesions';
 import InTuneLogo from '../assets/in-tune.svg';
 import useShowOnScroll from '../hooks/useShowOnScroll';
@@ -22,13 +22,13 @@ const Header = () => {
       <nav>
         <ul>
           <li>
-            <Link to='/'>Posts</Link>
+            <NavLink to='/' >Posts</NavLink>
           </li>
           <li>
-            <Link to='userid/profile'>Profile</Link>
+            <NavLink to='userid/profile'>Profile</NavLink>
           </li>
           <li>
-            <Link to='/friends'>Friends</Link>
+            <NavLink to='/friends'>Friends</NavLink>
           </li>
         </ul>
       </nav>
