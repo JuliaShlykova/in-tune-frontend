@@ -3,10 +3,15 @@ import Login from './routes/Login';
 import NotFound from './routes/NotFound';
 import PrivateRoutes from './PrivateRoutes';
 
+import Loading from './components/Loading';
+
 function App() {
   return (
     <>
     <Routes>
+    
+      <Route path='/loading' element={<Loading />} />
+
       <Route path="/login" element={<Login />} />
       <Route path="/not-found" element={<NotFound />} />
       <Route path='/*' element={<PrivateRoutes />} />

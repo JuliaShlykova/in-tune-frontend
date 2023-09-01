@@ -9,13 +9,19 @@ const PostItem = ({postInfo}) => {
   const [comments, setComments] = useState([{
     text: 'cool comment!',
     post: 1,
-    author: 'Mary Jane',
+    author: {
+      full_name: 'Mary Jane',
+      profileImgUrl: 'https://plus.unsplash.com/premium_photo-1664203068007-52240d0ca48f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80'
+    },
     likes: [],
     formatted_timestamp: 'Oct 14, 2003, 9:35 AM'
   }, {
     text: 'cool comment!',
     post: 1,
-    author: 'Mary Jane',
+    author: {
+      full_name: 'Mary Jane',
+      // profileImgUrl: 'https://plus.unsplash.com/premium_photo-1664203068007-52240d0ca48f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80'
+    },
     likes: [],
     formatted_timestamp: 'Oct 14, 2003, 9:35 AM'
   }])
@@ -35,7 +41,8 @@ const PostItem = ({postInfo}) => {
     <div className='post-item' >
       <div className='author-time-header'>
         <Link to='/userId/profile'>
-          <span>{postInfo.author}</span>
+          <div className='post-img-container'><img src={postInfo.author.profileImgUrl?postInfo.author.profileImgUrl:'/assets/icon.svg'} alt="author avatar" /></div>
+          <span>{postInfo.author.full_name}</span>
         </Link>
         <span className='post-date'>{postInfo.formatted_timestamp}</span>
       </div>

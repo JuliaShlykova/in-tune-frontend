@@ -2,6 +2,7 @@
   --main-color: #003153;
   --main-color-tint: #668398;
   --main-color-light: #e6eaee;
+  --main-color-mono: #e6f4ff;
   --red-color: #A40202;
   --selection-color: #0063a8;
   font-size: 16px;
@@ -135,25 +136,25 @@ header>* {
   justify-content: center;
 }
 
-nav ul{
+header nav ul{
   display: flex;
   flex-direction: row;
 }
 
-nav ul li {
+header nav ul li {
   margin: 0 1rem;
   transform-origin: center;
   color: var(--main-color);
 }
 
-nav ul li a.active {
+header nav ul li a.active {
   border: 2px solid var(--main-color);
   border-radius: 0.8em;
   padding: 0 5px;
   transition: all 0.1s;
 }
 
-nav ul li:hover, #btn-logout:hover {
+header nav ul li:hover, #btn-logout:hover {
   scale: 1.1;
   transition: scale 0.1s;
 }
@@ -172,7 +173,7 @@ main {
   margin-top: 20px;
 }
 
-.profile-container {
+.profile-container, .posts-route-container, .friends-route-container {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -326,6 +327,29 @@ main {
   justify-content: space-between;
 }
 
+/* .author-time-header  */
+
+.post-img-container {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 10px 0 0;
+  border: 1px solid var(--main-color);
+}
+
+.post-img-container>* {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.post-img-container>svg, .friend-avatar-container>svg {
+  background-color: var(--main-color);
+}
+
 .author-time-header a {
   font-weight: bold;
 }
@@ -379,7 +403,7 @@ main {
   right:0;
   width: 90%;
   margin-left: auto;
-  max-height: 300px;
+  max-height: 600px;
   overflow: auto;
   transition: all 1s;
 }
@@ -394,11 +418,18 @@ main {
 }
 
 .comment-item, .comment-form {
-  background-color: var(--main-color-light);
+  /* background-color: var(--main-color-light); */
+  background-color: var(--main-color-mono);
   margin: 10px;
   font-size: 0.9rem;
   padding: 5px;
   border-radius: 5px;
+}
+
+.comment-item .post-img-container {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
 }
 
 .comment-btn-like, .btn-create-comment{
@@ -418,13 +449,146 @@ main {
   margin: 5px;
 }
 
-.btn-create-comment {
-  /* appearance: none; */
-}
-
 .comment-btn-like:not(:disabled):hover, .btn-create-comment:hover {
   scale: 1.05;
 }
+
+/* Posts route */
+
+nav.side-navigation {
+  position: sticky;
+  top: 0;
+}
+
+nav.side-navigation ul li {
+  border-top: 1px solid var(--main-color);
+  position:relative;
+  overflow: hidden;
+  
+}
+
+nav.side-navigation ul li button {
+  padding: 1rem;
+  text-align: left;
+  letter-spacing: 5px;
+}
+
+nav.side-navigation ul li:last-child {
+  border-bottom: 1px solid var(--main-color);
+}
+
+nav.side-navigation ul li::after {
+  position: absolute;
+  top:0;
+  left:0;
+  content: '';
+  height: 100%;
+  width: 100%;
+  z-index: -10;
+  box-shadow: inset 0 0 10px 0px var(--main-color);
+  transform: scale(2);
+  transition: transform 0.5s;
+}
+
+nav.side-navigation ul li:hover::after {
+  transform: scale(1.1);
+}
+
+.posts-route-posts {
+  max-width: min(70vw, 700px);
+  border-left: 2px solid var(--main-color);
+}
+
+.posts-route-posts h1 {
+  text-align: center;
+}
+
+.posts-route-posts .post-item {
+  box-shadow: 5px 5px 5px 0 var(--main-color-tint);
+}
+
+/* friends route */
+
+.users {
+  /* max-width: 90vw; */
+  border-left: 2px solid var(--main-color);
+  padding: 20px;
+}
+
+.users h1 {
+  text-align: center;
+}
+
+.friend-items-container {
+  /* background-color: var(--main-color-mono); */
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.friend-item {
+  padding: 20px;
+  border: 1px solid var(--main-color);
+  border-radius: 20px;
+  /* width: 300px; */
+  /* height: 300px; */
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+  box-shadow: 5px 5px 5px 0 var(--main-color-tint);
+}
+
+.friend-item a {
+  text-align: center;
+}
+
+.friend-item a:hover {
+  text-decoration: underline;
+}
+
+.friend-avatar-container {
+  width: 200px;
+  height: 200px;
+  border-radius: 20px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  border: 1px solid var(--main-color);
+}
+
+.friend-avatar-container>*{
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.friend-item button {
+  background-color: var(--main-color);
+  color: white;
+}
+
+.friend-item button {
+  background-color: var(--main-color);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  opacity: 0.8;
+  margin-left: 5px;
+}
+
+.friend-item button:disabled {
+  opacity: 1;
+  background-color: var(--main-color-mono);
+  color: var(--main-color-tint)
+}
+
+.friend-item button:not(:disabled):hover {
+  opacity: 1;
+}
+
+/* button to top */
 
 #btn-scroll-to-top {
   position: fixed;
@@ -463,6 +627,29 @@ transition: all .5s ease-in-out;
   position: absolute;
   top: 50%;
   transform: translate(0, -50%);
+}
+
+/* footer */
+footer {
+  margin-top: 20px;
+  height: 1.5rem;
+  text-align: center;
+  background-color: var(--main-color-tint);
+}
+
+footer a {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transition: background-color 0.5s ease;
+}
+
+footer svg {
+  height: 100%;
+}
+
+footer a:hover {
+  background-color: var(--main-color-light);
 }
 
 @media (max-width: 800px) {
@@ -504,7 +691,7 @@ transition: all .5s ease-in-out;
     height: auto;
     padding: 10px 20px;
   }
-  .profile-container {
+  .profile-container, .posts-route-container, .friends-route-container {
     padding: 0 5vw;
     align-items: stretch;
     flex-direction: column;
@@ -517,6 +704,35 @@ transition: all .5s ease-in-out;
   .profile-posts {
     border-radius: 0 0 10px 10px;
     max-width: none;
+  }
+  nav.side-navigation {
+    position: static;
+  }
+  nav.side-navigation {
+    /* background-color: green; */
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: stretch;
+    border-bottom: 1px solid var(--main-color);
+  }
+  nav.side-navigation ul {
+    flex: 1;
+  }
+  nav.side-navigation ul li{
+    flex: 1;
+    border: none;
+  }
+  nav.side-navigation ul li:last-child {
+    border: none;
+  }
+  nav.side-navigation ul li button {
+    width: 100%;
+    text-align: center;
+  }
+  .posts-route-posts, .users {
+    max-width: none;
+    border: none;
   }
   #btn-delete-avatar {
     margin: 0;

@@ -1,5 +1,6 @@
 import React, { useReducer } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import { BsPersonFill } from 'react-icons/bs';
 
 const CommentItem = ({commentInfo}) => {
   const [liked, toggleLiked] = useReducer(liked=>!liked, false);
@@ -13,7 +14,12 @@ const CommentItem = ({commentInfo}) => {
     <div className='comment-item'>
       <div className='author-time-header'>
         <Link to='/userId/profile'>
-          <span>{commentInfo.author}</span>
+          <div className='post-img-container'>
+          {commentInfo.author.profileImgUrl
+          ?<img src={commentInfo.author.profileImgUrl} alt="author avatar" />
+          :<BsPersonFill color="white" />}
+          </div>
+          <span>{commentInfo.author.full_name}</span>
         </Link>
         <span className='post-date'>{commentInfo.formatted_timestamp}</span>
       </div>
