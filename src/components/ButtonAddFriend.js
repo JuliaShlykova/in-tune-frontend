@@ -1,17 +1,19 @@
-import React, { useReducer } from 'react'
+import React, { useReducer } from 'react';
+import { addFriend } from '../api/user';
 
 const ButtonAddFriend = ({userInfo}) => {
   const [added, toggleAdded] = useReducer(added=>!added, false);
 
 
-  const addFriend = () => {
+  const addUserAsFriend = () => {
     if (!added) {
+      addFriend(userInfo._id);
       toggleAdded();
     }
   }
 
   return (
-    <button onClick={addFriend} disabled={added}>{added?'Sent':'Send friend request'}</button>
+    <button onClick={addUserAsFriend} disabled={added}>{added?'Sent':'Send friend request'}</button>
   )
 }
 

@@ -1,79 +1,71 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PostItem from '../components/PostItem';
 import Profile from '../components/Profile';
 import PostForm from '../components/PostForm';
+import {getProfile} from '../api/user';
+import { useNavigate, useParams } from 'react-router-dom';
+import Loading from '../components/Loading';
+import { clearLocal, getLocalValue } from '../localStorage';
 
 const ProfileRoute = () => {
-  
+  const [userInfo, setUserInfo] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isCurUser, setIsCurUser] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(undefined);
 
-  const [userInfo, setUserInfo] = useState({
-    email: 'test',
-    firstName: 'Jane',
-    lastName: 'Doe',
-    profileImgUrl: 'https://plus.unsplash.com/premium_photo-1664203068007-52240d0ca48f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80',
-    profileInfo: {
-      location: 'New York',
-      dateOfBirth: '1980-12-31',
-      occupation: 'cook',
-      hobbies: 'books, dogs, walking'
-    }
-  })
+  const navigate = useNavigate();
 
-  const [posts, setPosts] = useState([
-    {
-      text: 'Hello',
-      private: false,
-      author: {
-        full_name: 'Mary Jane',
-        profileImgUrl: 'https://plus.unsplash.com/premium_photo-1664203068007-52240d0ca48f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80'
-      },
-      likes: [],
-      formatted_timestamp: 'Oct 14, 1983, 9:30 AM'
-    },
-    {
-      text: 'Hello, again',
-      private: false,
-      author: {
-        full_name: 'Mary Jane',
-        profileImgUrl: 'https://plus.unsplash.com/premium_photo-1664203068007-52240d0ca48f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80'
-      },
-      likes: [],
-      formatted_timestamp: 'Oct 14, 1993, 9:30 AM'
-    },
-    {
-      text: 'Hello, again and again',
-      private: false,
-      author: {
-        full_name: 'Mary Jane',
-        profileImgUrl: 'https://plus.unsplash.com/premium_photo-1664203068007-52240d0ca48f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80'
-      },
-      likes: [],
-      formatted_timestamp: 'Oct 14, 2003, 9:30 AM'
-    },
-    {
-      text: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptas repellat totam cum odio minus suscipit, explicabo voluptatum porro voluptates inventore, quas quidem nulla voluptatem quia. Nulla expedita amet harum alias!',
-      private: false,
-      author: {
-        full_name: 'Mary Jane',
-        profileImgUrl: 'https://plus.unsplash.com/premium_photo-1664203068007-52240d0ca48f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80'
-      },
-      likes: [],
-      formatted_timestamp: 'Oct 14, 1983, 9:30 AM'
+  const {userId} = useParams();
+
+  useEffect(() => {
+    if(getLocalValue('user')===userId) {
+      setIsCurUser(true);
+    } else {
+      setIsCurUser(false);
     }
-  ])
+  }, [userId]);
+
+  useEffect(() => {
+    setLoading(true);
+    getProfile(userId).then(response => {
+      setUserInfo(response.user);
+      setPosts(response.posts);
+    }).catch(err => {
+      if(err.response.status===401) {
+        clearLocal();
+        navigate('/login');
+      }
+      navigate('/not-found', {replace: true});
+    }).finally(()=> {
+      setLoading(false)
+    })
+  }, [userId, navigate])
+
+  useEffect(() => {
+    if (userInfo?.profileImgUrl) {
+      setAvatarUrl(userInfo.profileImgUrl);
+    } else {
+      setAvatarUrl(undefined);
+    }
+  }, [userInfo]);
 
   return (
-    <div className='profile-container'>
-      <Profile userInfo={userInfo} />
+    <>{loading
+    ?<Loading />
+    :<div className='profile-container'>
+      <Profile userInfo={{...userInfo, profileImgUrl: avatarUrl}} isCurUser={isCurUser} setAvatarUrl={setAvatarUrl} setUserInfo={setUserInfo} />
       <section className='profile-posts'>
-        <PostForm />
+        {isCurUser?<PostForm setPosts={setPosts} />:null}
         {posts.map((el, i) => {
           return (
-            <PostItem key={i} postInfo={el}/>
+            <PostItem key={i} isCurUser={isCurUser} setPosts={setPosts} postInfo={{...el, author: {firstName: userInfo.firstName, lastName: userInfo.lastName, _id: userId, profileImgUrl: avatarUrl}}}/>
           )
         })}
       </section>
-    </div>
+    </div>}
+    </>
+
   )
 }
 

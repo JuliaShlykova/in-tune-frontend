@@ -1,4 +1,5 @@
-import React, { useReducer } from 'react'
+import React, { useReducer } from 'react';
+import { acceptFriendRequest } from '../api/user';
 
 const ButtonAcceptRequest = ({userInfo}) => {
   const [accepted, toggleAccepted] = useReducer(accepted=>!accepted, false);
@@ -6,6 +7,7 @@ const ButtonAcceptRequest = ({userInfo}) => {
 
   const acceptRequest = () => {
     if (!accepted) {
+      acceptFriendRequest(userInfo._id);
       toggleAccepted();
     }
   }

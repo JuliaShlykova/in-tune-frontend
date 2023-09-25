@@ -1,13 +1,24 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
-import Footer from './components/Footer';
 import Friends from './routes/Friends';
 import Posts from './routes/Posts';
 import ProfileRoute from './routes/ProfileRoute';
 import ButtonToTop from './components/ButtonToTop';
+import { useEffect } from 'react';
+import { isJwtExpired } from 'jwt-check-expiration';
+import { getLocalValue, clearLocal } from './localStorage';
 
 function PrivateRoutes() {
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = getLocalValue('token');
+    const user = getLocalValue('user');
+    if (!token||isJwtExpired(token)||!user) {
+      clearLocal();
+      navigate('/login');
+    }
+  })
 
   return (
     <>
@@ -21,7 +32,6 @@ function PrivateRoutes() {
     </Routes>
     </main>
     <ButtonToTop />
-    <Footer />
     </>
   )
 }

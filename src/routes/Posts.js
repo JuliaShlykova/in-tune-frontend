@@ -1,59 +1,59 @@
-import React, { useState } from 'react'
-import PostItem from '../components/PostItem'
+import React, { useEffect, useState } from 'react'
+import PostItem from '../components/PostItem';
+import Loading from '../components/Loading';
+import { getPublicPosts, getPrivatePosts } from '../api/posts';
+import { useNavigate } from 'react-router-dom';
+import { clearLocal } from '../localStorage';
 
 const Posts = () => {
-  const [posts, setPosts] = useState([
-    {
-      text: 'Hello',
-      private: false,
-      author: {
-        full_name: 'Mary Jane',
-        profileImgUrl: 'https://images.unsplash.com/photo-1601288496920-b6154fe3626a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1826&q=80'
-      },
-      likes: [],
-      formatted_timestamp: 'Oct 14, 1983, 9:30 AM'
-    },
-    {
-      text: 'Hello, again',
-      private: false,
-      author: {
-        full_name: 'Mary Jane',
-        profileImgUrl: 'https://plus.unsplash.com/premium_photo-1664203068007-52240d0ca48f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80'
-      },
-      likes: [],
-      formatted_timestamp: 'Oct 14, 1993, 9:30 AM'
-    },
-    {
-      text: 'Hello, again and again',
-      private: false,
-      author: {
-        full_name: 'Mary Jane',
-        profileImgUrl: 'https://plus.unsplash.com/premium_photo-1664203068007-52240d0ca48f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80'
-      },
-      likes: [],
-      formatted_timestamp: 'Oct 14, 2003, 9:30 AM'
-    },
-    {
-      text: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptas repellat totam cum odio minus suscipit, explicabo voluptatum porro voluptates inventore, quas quidem nulla voluptatem quia. Nulla expedita amet harum alias!',
-      private: false,
-      author: {
-        full_name: 'Mary Jane',
-        profileImgUrl: 'https://plus.unsplash.com/premium_photo-1664203068007-52240d0ca48f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80'
-      },
-      likes: [],
-      formatted_timestamp: 'Oct 14, 1983, 9:30 AM'
-    }
-  ])
+  const [posts, setPosts] = useState([])
   const [postsStatus, setPostsStatus] = useState('Public Posts');
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    switch(postsStatus) {
+      case 'Public Posts':
+        getPublicPosts().then(response => {
+          setPosts(response);
+        }).catch(err => {
+          if(err.response.status===401) {
+            clearLocal();
+            navigate('/login');
+          }
+        }).finally(() => {
+          setLoading(false);
+        });
+        break;
+      case 'Private Posts':
+        getPrivatePosts().then(response => {
+          setPosts(response);
+        }).catch(err => {
+          if(err.response.status===401) {
+            clearLocal();
+            navigate('/login');
+          }
+        }).finally(() => {
+          setLoading(false);
+        });
+        break;
+      default: 
+        console.log('invalid postsStatus');
+        setLoading(false);
+    }
+    
+  }, [postsStatus, navigate])
 
   const getPublic = async() => {
     if (postsStatus==='Private Posts') {
+      setLoading(true);
       setPostsStatus('Public Posts');
     }
   }
 
   const getPrivate = async() => {
     if (postsStatus==='Public Posts') {
+      setLoading(true);
       setPostsStatus('Private Posts');
     }
   }
@@ -76,11 +76,15 @@ const Posts = () => {
         </nav>
         <section className='posts-route-posts'>
          <h1>{postsStatus}</h1>
+         {loading
+         ?<Loading />
+         :<>
           {posts.map((el, i) => {
             return (
               <PostItem key={i} postInfo={el}/>
             )
           })}
+          </>}
         </section>
     </div>
   )

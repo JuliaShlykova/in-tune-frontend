@@ -1,55 +1,75 @@
-import React, { useState } from 'react';
-import FriendItem from '../components/FriendItem'
+import React, { useEffect, useState } from 'react';
+import FriendItem from '../components/FriendItem';
+import { getFriendsList, getRequestsList, getSentRequestsList, getFriendsSuggestions } from '../api/user';
+import { clearLocal } from '../localStorage';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../components/Loading';
 
 const Friends = () => {
-  const [users, setUsers] = useState([
-    {
-      firstName: 'Harry',
-      lastName: 'Potter',
-      profileImgUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcMnPuYAnD0_voIsrjsaSxRD5BipL4eex44Q&usqp=CAU',
-      _id: '12'
-    },
-    {
-      firstName: 'Ron',
-      lastName: 'Weasley',
-      profileImgUrl: 'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
-      _id: '13'
-    },
-    {
-      firstName: 'Hermione',
-      lastName: 'Granger',
-      profileImgUrl: 'https://www.koimoi.com/wp-content/new-galleries/2023/04/harry-potters-hermione-granger-intro-scene-done-better-than-emma-watson-makes-potterheads-go-crazy-say-leaked-footage-of-the-cursed-child-see-video-001.jpg',
-      _id: '13'
-    }
-  ]);
-
+  const [users, setUsers] = useState([]);
   const [usersStatus, setUsersStatus] = useState('Friends');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const getFriends = async() => {
+  const getRequestedUsers = async(fn) => {
+    setLoading(true);
+    try {
+      const requestedUsers = await fn();
+      setUsers(requestedUsers);
+    } catch(err) {
+      if(err.response.status===401) {
+        clearLocal();
+        navigate('/login');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const getFriends = () => {
     if (usersStatus !== 'Friends') {
       setUsersStatus('Friends');
+      getRequestedUsers(getFriendsList);
     }
   }
 
-  const getRequests = async() => {
+  const getRequests = () => {
     if (usersStatus !== 'Requests') {
       setUsersStatus('Requests');
+      getRequestedUsers(getRequestsList);
     }
   }
 
-  const getSentRequests = async() => {
+  const getSentRequests = () => {
     if (usersStatus !== 'Sent Requests') {
       setUsersStatus('Sent Requests');
+      getRequestedUsers(getSentRequestsList);
     }
   }
 
-  const getSuggestions = async() => {
+  const getSuggestions = () => {
     if (usersStatus !== 'Suggestions') {
       setUsersStatus('Suggestions');
+      getRequestedUsers(getFriendsSuggestions);
     }
   }
 
+  useEffect(() => {
+    setLoading(true);
+    getFriendsList().then(response => {
+      setUsers(response);
+    }).catch(err => {
+      if(err.response.status===401) {
+        clearLocal();
+        navigate('/login');
+      }
+    }).finally(() => {
+      setLoading(false);
+    })
+  }, [navigate]);
+
   return (
+    <>
     <div className='friends-route-container'>
       <nav className='side-navigation'>
         <ul>
@@ -86,6 +106,8 @@ const Friends = () => {
         </div>
       </section>
     </div>
+    {loading?<Loading />:null}
+    </>
   )
 }
 
