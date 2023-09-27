@@ -31,10 +31,8 @@ const Profile = ({userInfo, setAvatarUrl, setUserInfo}) => {
   }, [userId])
 
   useEffect(() => {
-    console.log('status checking');
     if(!(userId===getLocalValue('user'))) {
       getFriendStatus(userId).then(response => {
-        console.log(response);
         setFriendStatus(response);
       }).catch(err => {
         if(err.response.status===401) {

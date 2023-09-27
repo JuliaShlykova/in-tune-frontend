@@ -3,7 +3,7 @@ import setHeaders from './setHeaders';
 
 export const getPublicPosts = async() => {
   try {
-    const response = await axios.get(`${process.env.API_URL}/posts/public-posts`, setHeaders());
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/public-posts`, setHeaders());
     return response.data.requestedPosts;
   } catch(err) {
     console.log(err.message);
@@ -13,7 +13,7 @@ export const getPublicPosts = async() => {
 
 export const getPrivatePosts = async() => {
   try {
-    const response = await axios.get(`${process.env.API_URL}/posts/friends-posts`, setHeaders());
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/friends-posts`, setHeaders());
     return response.data.requestedPosts;
   } catch(err) {
     console.log(err.message);
@@ -23,7 +23,7 @@ export const getPrivatePosts = async() => {
 
 export const getPostLikes = async(postId) => {
   try {
-    const response = await axios.get(`${process.env.API_URL}/posts/${postId}/likes`, setHeaders());
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/${postId}/likes`, setHeaders());
     return response.data.likes;
   } catch(err) {
     console.log(err.message);
@@ -33,7 +33,7 @@ export const getPostLikes = async(postId) => {
 
 export const likePost = async(postId) => {
   try {
-    await axios.post(`${process.env.API_URL}/posts/${postId}/like`, {}, setHeaders());
+    await axios.post(`${process.env.REACT_APP_API_URL}/posts/${postId}/like`, {}, setHeaders());
     return;
   } catch(err) {
     console.log(err.message);
@@ -43,7 +43,7 @@ export const likePost = async(postId) => {
 
 export const createPost = async(newPost) => {
   try {
-    const response = await axios.post(`${process.env.API_URL}/posts/create`, newPost, setHeaders());
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/posts/create`, newPost, setHeaders());
     return response.data.posts;
   } catch(err) {
     console.log(err.message);
@@ -53,7 +53,7 @@ export const createPost = async(newPost) => {
 
 export const getComments = async(postId) => {
   try {
-    const response = await axios.get(`${process.env.API_URL}/posts/${postId}/comments`, setHeaders());
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/${postId}/comments`, setHeaders());
     return response.data.comments;
   } catch(err) {
     console.log(err.message);
@@ -63,7 +63,7 @@ export const getComments = async(postId) => {
 
 export const createComment = async(postId, comment) => {
   try {
-    const response = await axios.post(`${process.env.API_URL}/posts/${postId}/comments/create`, comment, setHeaders());
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/posts/${postId}/comments/create`, comment, setHeaders());
     return response.data.comment;
   } catch(err) {
     console.log(err.message);
@@ -73,7 +73,7 @@ export const createComment = async(postId, comment) => {
 
 export const likeComment = async(postId, commentId) => {
   try {
-    const response = await axios.post(`${process.env.API_URL}/posts/${postId}/comments/${commentId}/like`, {}, setHeaders());
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/posts/${postId}/comments/${commentId}/like`, {}, setHeaders());
     return response.data.likeCount;
   } catch(err) {
     console.log(err.message);
@@ -83,7 +83,7 @@ export const likeComment = async(postId, commentId) => {
 
 export const deletePost = async(postId) => {
   try {
-    const response = await axios.post(`${process.env.API_URL}/posts/${postId}/delete`, {}, setHeaders());
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/posts/${postId}/delete`, {}, setHeaders());
     return response.data.posts;
   } catch(err) {
     console.log(err.message);
@@ -93,7 +93,7 @@ export const deletePost = async(postId) => {
 
 export const deleteComment = async(postId, commentId) => {
   try {
-    const response = await axios.post(`${process.env.API_URL}/posts/${postId}/comments/${commentId}/delete`, {}, setHeaders());
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/posts/${postId}/comments/${commentId}/delete`, {}, setHeaders());
     return response.data;
   } catch(err) {
     console.log(err.message);

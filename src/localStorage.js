@@ -1,3 +1,5 @@
+import Cookies from "js-cookie"; 
+
 export const removeLocalKey = (key) => {
   localStorage.removeItem(key);
 }
@@ -11,5 +13,9 @@ export const getLocalValue = (key) => {
 }
 
 export const clearLocal = () => {
+  if (Cookies.get('token')||Cookies.get('user')) {
+    Cookies.remove('token');
+    Cookies.remove('user');
+  }
   localStorage.clear();
 }

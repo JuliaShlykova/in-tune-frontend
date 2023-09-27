@@ -1,10 +1,11 @@
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import InTuneLogo from '../assets/in-tune-invert.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
-import { login, googleLogin } from '../api/auth';
+import { login } from '../api/auth';
 import Loading from '../components/Loading';
 import { setLocalValue } from '../localStorage';
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,7 +14,6 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   
-
   const navigate = useNavigate();
 
   const submitForm = async(e) => {
@@ -52,14 +52,27 @@ const Login = () => {
 
   const loginWithGoogle = async(e) => {
     try {
-      const response = await googleLogin();
-      console.log('response: ', response);
-      setLocalValue('user', response.userId);
-      navigate('/');
+      window.open(`${process.env.REACT_APP_API_URL}/auth/google`);
+      // const response = await googleLogin();
+      // console.log('response: ', response);
+      // setLocalValue('user', response.userId);
+      // navigate('/');
     } catch(err) {
       console.log(err);
     }
   }
+
+  useEffect(() => {
+    const token = Cookies.get('token');
+    const user = Cookies.get('user');
+    if (token) {
+      setLocalValue('token', token);
+      if (user) {
+        setLocalValue('user', user);
+        navigate('/');
+      }
+    }
+  }, [navigate]);
 
   return (<>
    {loading
@@ -92,9 +105,9 @@ const Login = () => {
           <button id='btn-example-account' onClick={examplelogin}>
             Log in with Example account
           </button>
-          <button id='btn-google-account' onClick={loginWithGoogle}>
+          <a href={`${process.env.REACT_APP_API_URL}/auth/google`} id='btn-google-account'>
             Log in with Google
-          </button>
+          </a>
         </div>
       </div>
     </div>)}
