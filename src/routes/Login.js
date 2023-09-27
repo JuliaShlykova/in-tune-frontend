@@ -50,18 +50,6 @@ const Login = () => {
     }
   }
 
-  const loginWithGoogle = async(e) => {
-    try {
-      window.open(`${process.env.REACT_APP_API_URL}/auth/google`);
-      // const response = await googleLogin();
-      // console.log('response: ', response);
-      // setLocalValue('user', response.userId);
-      // navigate('/');
-    } catch(err) {
-      console.log(err);
-    }
-  }
-
   useEffect(() => {
     const token = Cookies.get('token');
     const user = Cookies.get('user');

@@ -8,7 +8,7 @@ import { getLocalValue, clearLocal } from '../localStorage';
 const Header = () => {
   const show = useShowOnScroll();
 
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const navigator = useNavigate();
 
   const logout = () => {
