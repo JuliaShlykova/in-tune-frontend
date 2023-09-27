@@ -2,7 +2,6 @@ import axios from 'axios';
 
 export const login = async(data) => {
   try {
-    console.log('env: ', process.env.REACT_APP_API_URL)
     const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, data);
     localStorage.setItem('token', response.data.token);
     return response.data;
